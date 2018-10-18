@@ -1,0 +1,46 @@
+upstream pingit_app_server {
+  # fail_timeout=0 means we always retry an upstream if it failed
+  # to return a good HTTP response (in case the Unicorn master nukes a
+  # single worker for timing out).
+
+  server unix:/webapps/pingit/run/gunicorn.sock fail_timeout=0;
+}
+
+server {
+
+    listen  80;
+    server_name  boongbank.com;
+
+    client_max_body_size 2m;
+
+    access_log /webapps/pingit/logs/nginx-access.log;
+    error_log /webapps/pingit/logs/nginx-error.log;
+
+    location /static/ {
+        alias /webapps/pingit/pingit_clone/static/;
+    }
+
+    location /media/ {
+        alias /webapps/pingit/pingit_clone/media/;
+    }
+
+    location / {
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+        proxy_set_header Host $http_host;
+
+        proxy_redirect off;
+
+        if (!-f $request_filename) {
+            proxy_pass http://pingit_app_server;
+            break;
+        }
+    }
+
+
+
+    error_page 500 502 503 504 /500.html;
+    location = /500.html {
+        root /webapps/pingit/pingit_clone/static/;
+    }
+}

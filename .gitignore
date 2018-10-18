@@ -1,6 +1,5 @@
 html/
 .vagrant/
 Vagrantfile.broke
-config
 tutorial_bootstrap.sh
 *.log

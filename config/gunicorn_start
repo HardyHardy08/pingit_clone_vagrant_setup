@@ -1,0 +1,33 @@
+#!/bin/bash
+
+NAME="pingit_clone"  # application name
+DJANGODIR=/webapps/pingit/pingit_clone  # Django project dir
+SOCKFILE=/webapps/pingit/run/gunicorn.sock
+USER=pingit
+GROUP=webapps
+NUM_WORKERS=3
+DJANGO_SETTINGS_MODULE=pingit_clone.settings.production
+DJANGO_WSGI_MODULE=pingit_clone.wsgi
+
+echo "starting $NAME as `whoami`"
+
+
+cd $DJANGODIR
+source ../bin/activate
+export BOONG_PASSWORD="123123123123"
+export DJANGO_SECRET_KEY="_k%7pmu4g7xs!d%4x5ntamuou(_uoh4vlmvp(&sf5cs8cwql=q"
+export DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE
+export PYTHONPATH=$DJANGODIR:$PYTHONPATH
+
+# create run directory if it does not exist
+RUNDIR=$(dirname $SOCKFILE)
+test -d $RUNDIR || mkdir -p $RUNDIR
+
+
+exec ../gunicorn ${DJANGO_WSGI_MODULE}:application \
+  --name $NAME \
+  --workers $NUM_WORKERS \
+  --user=$USER --group=$GROUP \
+  --bind=unix:$SOCKFILE \
+  --log-level=debug \
+  --log-file=-
