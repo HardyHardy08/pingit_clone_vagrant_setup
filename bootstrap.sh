@@ -48,13 +48,14 @@ echo "======== create psql role boong ========"
 sudo -su postgres createdb boong_bank --owner=boong &&
 echo "======== create psql database boong_bank ========"
 
-sudo -su pingit sh /vagrant/config/pingit_script.sh
+sudo -su pingit bash /vagrant/config/pingit_script.sh
 
 # configure gunicorn script
 echo "======== configure gunicorn ========"
-touch bin/gunicorn_start
-cat /vagrant/config/gunicorn_start >> bin/gunicorn_start &&
-sudo chmod u+x bin/gunicorn_start
+touch $PROJECT_DIR/bin/gunicorn_start
+cat /vagrant/config/gunicorn_start >> $PROJECT_DIR/bin/gunicorn_start &&
+sudo chown pingit:webapps $PROJECT_DIR/bin/gunicorn_start
+sudo chmod u+x $PROJECT_DIR/bin/gunicorn_start
 echo "======== configured gunicorn ========"
 
 # configure supervisor

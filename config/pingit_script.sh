@@ -35,7 +35,7 @@ echo "======== configured repo ========"
 echo "======== setting up virtual environment ========"
 cd $PROJECT_DIR && virtualenv -p /usr/bin/python3.6 .
 source bin/activate
-pip install -r requirements/production.txt &&
+pip install --no-cache-dir -r requirements/production.txt &&
 echo "======== requirements installed ========"
 # django setup
 export DJANGO_DIR=/webapps/pingit/pingit_clone
