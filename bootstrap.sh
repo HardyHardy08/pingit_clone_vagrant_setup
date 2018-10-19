@@ -38,6 +38,9 @@ echo "======== created pingit user ========"
 sudo chown pingit:webapps $PROJECT_DIR 
 sudo chown pingit:webapps $PINGIT_REPO
 sudo chown vagrant:webapps /home/vagrant/.cache
+# will need to explicitly chmod .cache/pip later since pip has not been called -- fresh `vagrant up`
+# shows that .cache/pip is still not 755. But the only error it is outputting is a failed install
+# for setproctitle which can be considered optional. *non urgent issue*
 sudo chmod -R 755 /home/vagrant/.cache
 echo "======== set permissions ========"
 
@@ -75,7 +78,10 @@ sudo service nginx restart &&
 echo "======== configured nginx ========"
 end=`date +%s`
 
+# start services
+sudo supervisorctl update
+sudo service nginx restart
+
 runtime=$((end-start))
 
-echo "script runtime was"
-echo $runtime
+echo "script runtime was: ${runtime}"
