@@ -45,6 +45,7 @@ export BOONG_PASSWORD="123123123123"
 cd $DJANGO_DIR
 python manage.py makemigrations customers banking
 python manage.py migrate customers
+python manage.py migrate banking
 python manage.py migrate banking &&
 echo "======== django has migrated ========"
 echo "======== logging out of pingit ========"
